@@ -1,23 +1,30 @@
 import { MiddlePanel } from "@/components/layout/MiddlePanel";
 import { ContentArea } from "@/components/layout/ContentArea";
-import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 import { MiddlePanelItem } from "@/types/navigation";
+import { mockBots } from "@/lib/mock-bots";
+import { BotDetailsView } from "@/components/bots/BotDetailsView";
+import { notFound } from "next/navigation";
 
-const mockBots: MiddlePanelItem[] = [
-  { id: "1", title: "Trading Bot Alpha", subtitle: "Pending approval", path: "/platform/bots/1" },
-  { id: "2", title: "Market Maker Pro", subtitle: "Active", path: "/platform/bots/2" },
-  { id: "3", title: "Arbitrage Bot", subtitle: "Under review", path: "/platform/bots/3" },
-];
+export default async function BotDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const bot = mockBots.find((b) => b.id === id);
 
-export default function BotDetailPage({ params }: { params: { id: string } }) {
+  if (!bot) {
+    notFound();
+  }
+
+  const botItems: MiddlePanelItem[] = mockBots.map((b) => ({
+    id: b.id,
+    title: b.name,
+    subtitle: `${b.status.replace("_", " ")} • v${b.version}`,
+    path: `/platform/bots/${b.id}`,
+  }));
+
   return (
     <>
-      <MiddlePanel title="Bots" items={mockBots} emptyMessage="No bots found" />
+      <MiddlePanel title="Bots" items={botItems} emptyMessage="No bots found" />
       <ContentArea>
-        <PagePlaceholder
-          title={`Bot #${params.id}`}
-          description="Bot details, moderation, risk assessment, logs, compliance"
-        />
+        <BotDetailsView bot={bot} />
       </ContentArea>
     </>
   );

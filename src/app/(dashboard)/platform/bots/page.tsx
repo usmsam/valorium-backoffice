@@ -1,23 +1,28 @@
 import { MiddlePanel } from "@/components/layout/MiddlePanel";
 import { ContentArea } from "@/components/layout/ContentArea";
-import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 import { MiddlePanelItem } from "@/types/navigation";
-
-const mockBots: MiddlePanelItem[] = [
-  { id: "1", title: "Trading Bot Alpha", subtitle: "Pending approval", path: "/platform/bots/1" },
-  { id: "2", title: "Market Maker Pro", subtitle: "Active", path: "/platform/bots/2" },
-  { id: "3", title: "Arbitrage Bot", subtitle: "Under review", path: "/platform/bots/3" },
-];
+import { mockBots } from "@/lib/mock-bots";
 
 export default function BotsPage() {
+  const botItems: MiddlePanelItem[] = mockBots.map((bot) => ({
+    id: bot.id,
+    title: bot.name,
+    subtitle: `${bot.status.replace("_", " ")} • v${bot.version}`,
+    path: `/platform/bots/${bot.id}`,
+  }));
+
   return (
     <>
-      <MiddlePanel title="Bots" items={mockBots} emptyMessage="No bots found" />
+      <MiddlePanel title="Bots" items={botItems} emptyMessage="No bots found" />
       <ContentArea>
-        <PagePlaceholder
-          title="Bots Management"
-          description="Approve, reject, and monitor trading bots"
-        />
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Select a bot to view details</h2>
+            <p className="text-muted-foreground">
+              Choose a bot from the list to see moderation details
+            </p>
+          </div>
+        </div>
       </ContentArea>
     </>
   );
