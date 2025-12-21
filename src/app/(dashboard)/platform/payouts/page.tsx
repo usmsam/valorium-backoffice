@@ -1,22 +1,22 @@
 import { MiddlePanel } from "@/components/layout/MiddlePanel";
 import { ContentArea } from "@/components/layout/ContentArea";
-import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 import { MiddlePanelItem } from "@/types/navigation";
-
-const mockPayouts: MiddlePanelItem[] = [
-  { id: "1", title: "Pending Requests", subtitle: "8 requests", path: "/platform/payouts/1" },
-  { id: "2", title: "Approved", subtitle: "45 payouts", path: "/platform/payouts/2" },
-];
+import { mockPayouts } from "@/lib/mock-payouts";
+import { PayoutsDashboard } from "@/components/payouts/PayoutsDashboard";
 
 export default function PayoutsPage() {
+  const payoutItems: MiddlePanelItem[] = mockPayouts.map((payout) => ({
+    id: payout.id,
+    title: `${payout.developerName} - $${payout.amount}`,
+    subtitle: `${payout.status} • ${payout.method} • ${new Date(payout.requestedAt).toLocaleDateString()}`,
+    path: `/platform/payouts/${payout.id}`,
+  }));
+
   return (
     <>
-      <MiddlePanel title="Payouts" items={mockPayouts} />
+      <MiddlePanel title="Payouts" items={payoutItems} emptyMessage="No payout requests found" />
       <ContentArea>
-        <PagePlaceholder
-          title="Payouts Management"
-          description="Manage developer payout requests, approvals, history"
-        />
+        <PayoutsDashboard payouts={mockPayouts} />
       </ContentArea>
     </>
   );
