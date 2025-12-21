@@ -1,22 +1,28 @@
 import { MiddlePanel } from "@/components/layout/MiddlePanel";
 import { ContentArea } from "@/components/layout/ContentArea";
-import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 import { MiddlePanelItem } from "@/types/navigation";
-
-const mockUsers: MiddlePanelItem[] = [
-  { id: "1", title: "user@example.com", subtitle: "Active", path: "/platform/users/1" },
-  { id: "2", title: "trader@example.com", subtitle: "Active", path: "/platform/users/2" },
-];
+import { mockUsers } from "@/lib/mock-users";
 
 export default function UsersPage() {
+  const userItems: MiddlePanelItem[] = mockUsers.map((user) => ({
+    id: user.id,
+    title: user.name,
+    subtitle: `${user.status.replace("_", " ")} • ${user.subscriptions.filter(s => s.status === "active").length} bots`,
+    path: `/platform/users/${user.id}`,
+  }));
+
   return (
     <>
-      <MiddlePanel title="Users" items={mockUsers} />
+      <MiddlePanel title="Users" items={userItems} emptyMessage="No users found" />
       <ContentArea>
-        <PagePlaceholder
-          title="Users Management"
-          description="Manage API keys, exchanges, actions, complaints, risk profiles"
-        />
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Select a user to view details</h2>
+            <p className="text-muted-foreground">
+              Choose a user from the list to manage API keys, exchanges, activity, complaints and risk profile
+            </p>
+          </div>
+        </div>
       </ContentArea>
     </>
   );
